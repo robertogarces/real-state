@@ -1,0 +1,72 @@
+# Target
+target:
+  - price
+  - price_log
+
+# Columns to drop
+constant_columns:
+  - stateId
+  - country
+  - state
+  - currency
+unique_columns:
+  - countyId
+heavily_imbalanced_columns:
+  - is_bankOwned
+  - is_forAuction
+  - hasBadGeocode
+  - datePostedString
+  - isNewConstruction
+  - hasPetsAllowed
+  - buildingArea
+non_important_columns:
+  - event
+  - time
+  - cityId
+  #- latitude
+  #- longitude
+  - zipcode
+  - streetAddress 
+  - livingAreaValue #is the same that livingArea
+data_leakage_columns:
+  - pricePerSquareFoot
+
+# Features data type
+categorical_columns:
+  - city
+  - lotAreaUnits
+  - bathrooms
+  - bedrooms
+  - parking
+  - levels
+  - pool
+  - spa
+  - homeType
+  - county
+
+# Columns to impute
+explicitly_camo_nulls_features:
+  - yearBuilt
+  - livingArea
+  - livingAreaValue
+  - bathrooms
+  - bedrooms
+  - buildingArea
+implicitly_camo_nulls_features:
+  - parking
+  - garageSpaces
+  - hasGarage
+  - levels
+  - pool
+  - spa
+
+  # Columns with outliers
+outliers:
+  - price
+  - yearBuilt
+  - livingArea
+  - livingAreaValue
+  - bathrooms
+  - bedrooms
+  - buildingArea
+  - garageSpaces
