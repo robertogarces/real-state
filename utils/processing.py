@@ -246,17 +246,56 @@ def calculate_statistic(df, feature, statistic):
 
 
 def drop_features(df_, target):
-    cols_to_use = [target, 'city', 'county', 'lotAreaUnits', 'parking', 'garageSpaces', 'hasGarage', 'pool',
-                   'spa', 'homeType', 'livingAreaMts_log', 'yearBuilt', 'mapped_bathrooms', 'city_median_price',
-                   'city_mean_price', 'county_median_price', 'county_mean_price', 'bedrooms', 'mapped_levels',
-                   '5_knn_mean_price', '5_knn_median_price', '25_knn_mean_price', '25_knn_median_price']
 
-    # Filtrar las columnas que existen en el DataFrame
-    cols_to_use = [col for col in cols_to_use if col in df_.columns]
+    cols_to_drop = [
+        'Unnamed: 0',
+        'id',
+        'countyId',
+        'cityId',
+        'country',
+        'datePostedString',
+        'is_bankOwned',
+        'is_forAuction',
+        'event',
+        'time',
+        'pricePerSquareFoot',
+        'city',
+        'state',
+        'streetAddress',
+        'zipcode',
+        'hasBadGeocode',
+        'description',
+        'currency',
+        'livingAreaValue',
+        'livingArea',
+        'livingAreaMts',
+        'buildingArea',
+        'hasGarage',
+        'isNewConstruction',
+        'hasPetsAllowed',
+        'bedrooms',
+        'bathrooms',
+    ]
 
-    df_ = df_[cols_to_use]
+    # Filtra las columnas existentes en el DataFrame
+    cols_to_drop = [col for col in cols_to_drop if col in df_.columns]
+
+    # Elimina las columnas del DataFrame
+    df_.drop(columns=cols_to_drop, inplace=True, errors='ignore')
+
+    # Mantén el target seleccionado y elimina el otro
+    if target == 'price':
+        other_target = 'price_log'
+    elif target == 'price_log':
+        other_target = 'price'
+    else:
+        raise ValueError("El valor del target debe ser 'price' o 'price_log'.")
+
+    if target in df_.columns and other_target in df_.columns:
+        df_.drop(columns=other_target, inplace=True)
 
     return df_
+
 
 
 import pandas as pd
