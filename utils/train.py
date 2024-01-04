@@ -83,6 +83,27 @@ def train_lightgbm_model_(dataframe, target, best_params=None):
         model = lgb.LGBMRegressor(**best_params)
     model.fit(X_train, y_train)
 
+
+
+    # Evaluación en el conjunto de training
+    y_pred_train = model.predict(X_train)
+
+    train_rmse = np.sqrt(np.mean((y_train - y_pred_train)**2))
+    train_mse = np.mean((y_train - y_pred_train)**2)
+    train_mae = np.mean(np.abs(y_train - y_pred_train))
+    train_median_absolute_error = np.median(np.abs(y_train - y_pred_train))
+    train_r2 = np.corrcoef(y_train, y_pred_train)[0, 1]**2    
+    train_mape = mape_score(y_train, y_pred_train)
+
+    print(f'Test RMSE: {int(train_rmse)}')
+    print(f'Test MSE : {int(train_mse)}')
+    print(f'Test MAE : {int(train_mae)}')
+    print(f'Test MeAE: {int(train_median_absolute_error)}')
+    print(f'Test MAPE: {int(train_mape)}')
+    print(f'Test R2  : {round(test_r2, 3)}')
+
+
+
     # Evaluación en el conjunto de validación
     y_pred = model.predict(X_val)
 
@@ -91,14 +112,14 @@ def train_lightgbm_model_(dataframe, target, best_params=None):
     test_mae = np.mean(np.abs(y_val - y_pred))
     test_median_absolute_error = np.median(np.abs(y_val - y_pred))
     test_r2 = np.corrcoef(y_val, y_pred)[0, 1]**2    
-    mape = mape_score(y_val, y_pred)
+    test_mape = mape_score(y_val, y_pred)
 
-    print(f'RMSE: {int(test_rmse)}')
-    print(f'MSE : {int(test_mse)}')
-    print(f'MAE : {int(test_mae)}')
-    print(f'MeAE: {int(test_median_absolute_error)}')
-    print(f'MAPE: {int(mape)}')
-    print(f'R2  : {round(test_r2, 3)}')
+    print(f'Test RMSE: {int(test_rmse)}')
+    print(f'Test MSE : {int(test_mse)}')
+    print(f'Test MAE : {int(test_mae)}')
+    print(f'Test MeAE: {int(test_median_absolute_error)}')
+    print(f'Test MAPE: {int(test_mape)}')
+    print(f'Test R2  : {round(test_r2, 3)}')
 
     return model
 

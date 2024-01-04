@@ -246,9 +246,9 @@ def calculate_statistic(df, feature, statistic):
 
 
 def drop_features(df_, target):
-    cols_to_use = [target,'id', 'city', 'county', 'lotAreaUnits', 'parking', 'garageSpaces', 'hasGarage', 'pool',
+    cols_to_use = [target, 'city', 'county', 'lotAreaUnits', 'parking', 'garageSpaces', 'hasGarage', 'pool',
                    'spa', 'homeType', 'livingAreaMts_log', 'yearBuilt', 'mapped_bathrooms', 'city_median_price',
-                   'city_mean_price', 'county_median_price', 'county_mean_price', 'bedrooms', 'levels',
+                   'city_mean_price', 'county_median_price', 'county_mean_price', 'bedrooms', 'mapped_levels',
                    '5_knn_mean_price', '5_knn_median_price', '25_knn_mean_price', '25_knn_median_price']
 
     # Filtrar las columnas que existen en el DataFrame
@@ -312,5 +312,30 @@ def encode_categorical_variables(df):
   return df
 
 
+import pandas as pd
 
+def remove_highly_correlated_features(dataset, target, threshold=0.8):
+    # Separate features and target variable
+    X = dataset.drop(columns=[target])
+
+    # Calculate correlation matrix
+    correlation_matrix = X.corr()
+
+    # Find pairs of highly correlated features
+    high_corr_pairs = set()
+    for i in range(len(correlation_matrix.columns)):
+        for j in range(i):
+            if abs(correlation_matrix.iloc[i, j]) >  threshold:
+                colname_i = correlation_matrix.columns[i]
+                colname_j = correlation_matrix.columns[j]
+                high_corr_pairs.add((colname_i, colname_j))
+
+    # Remove features involved in highly correlated pairs
+    features_to_remove = set()
+    for pair in high_corr_pairs:
+        features_to_remove.add(pair[1])
+
+    reduced_dataset = dataset.drop(columns=features_to_remove)
+
+    return reduced_dataset
 
