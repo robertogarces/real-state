@@ -248,33 +248,34 @@ def calculate_statistic(df, feature, statistic):
 def drop_features(df_, target):
 
     cols_to_drop = [
-        'Unnamed: 0',
-        'id',
-        'countyId',
-        'cityId',
-        'country',
-        'datePostedString',
-        'is_bankOwned',
-        'is_forAuction',
-        'event',
-        'time',
-        'pricePerSquareFoot',
-        'city',
-        'state',
-        'streetAddress',
-        'zipcode',
-        'hasBadGeocode',
-        'description',
-        'currency',
-        'livingAreaValue',
-        'livingArea',
-        'livingAreaMts',
-        'buildingArea',
-        'hasGarage',
-        'isNewConstruction',
-        'hasPetsAllowed',
-        'bedrooms',
-        'bathrooms',
+        'Unnamed: 0', # ID
+        'id', # ID
+        'countyId', # Correlated with county_median_price and county_mean_price
+        'cityId', # Correlated to city_median_price and city_mean_price
+        'country', # Correlated to countyId
+        'datePostedString', # Heavily imbalanced and almost all of the dates are from a single period
+        'is_bankOwned', # Heavily imbalanced
+        'is_forAuction', # Heavily imbalanced
+        'event', # We are just keeping the first event (property first listing)
+        'time', # Nothing relevant to do with this right now
+        'pricePerSquareFoot', # Data leakage
+        'city', # Correlated to cityId
+        'stateId', # All of the properties are from the same state (California)
+        'state', # All of the properties are from the same state (California)
+        'streetAddress', # ID
+        'zipcode', # Correlated to countyId and CityId
+        'hasBadGeocode', # Heavily imbalanced
+        'description', # Maybe there's something to do with this feature, but it's out of the scoop of this project
+        'currency', # All of the currency are the same (USD)
+        'livingAreaValue', # Data leakage
+        'livingArea', # We are using livingAreaMts_log
+        'livingAreaMts', # We are using livingAreaMts_log
+        'buildingArea', # Heavily imbalanced and correlated to livingArea
+        'hasGarage', # Correlated to garageSpaces
+        'isNewConstruction', # Heavily imbalanced
+        'hasPetsAllowed', # Heavily imbalanced
+        'bedrooms', # We're using the mapped version of this feature
+        'bathrooms', # We're using the mapped version of this feature
     ]
 
     # Filtra las columnas existentes en el DataFrame
@@ -378,3 +379,47 @@ def remove_highly_correlated_features(dataset, target, threshold=0.8):
 
     return reduced_dataset
 
+
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import silhouette_score
+
+def cluster_model_feature(dataset, features, max_clusters=5):
+
+    X = dataset[features]
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(X)
+
+    silhouette_scores = []
+    for i in range(2, max_clusters + 1):  # Empezamos desde 2 clusters
+        kmeans = KMeans(n_clusters=i, random_state=42)
+        kmeans.fit(X_scaled)
+        labels = kmeans.labels_
+        silhouette_avg = silhouette_score(X_scaled, labels)
+        silhouette_scores.append(silhouette_avg)
+
+    # Find the optimal number of clusters
+    optimal_clusters = silhouette_scores.index(max(silhouette_scores)) + 2  # +2 porque empezamos desde 2 clusters
+    print(f"Optimal number of clusters: {optimal_clusters}")
+
+    # Build and return the clustering model with the optimal number of clusters
+    clustering_model = KMeans(n_clusters=optimal_clusters, random_state=42)
+    clustering_model.fit(X_scaled)
+
+    return clustering_model
+
+
+
+def apply_cluster_model_feature(dataset, clustering_model, features):
+    # Escalar las features del dataset
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(dataset[features])
+
+    # Obtener las predicciones de cluster
+    cluster_predictions = clustering_model.predict(X_scaled)
+
+    # Agregar las predicciones como una nueva columna al dataset
+    dataset_with_clusters = dataset.copy()
+    dataset_with_clusters['Cluster'] = cluster_predictions
+
+    return dataset_with_clusters
