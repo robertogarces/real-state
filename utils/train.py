@@ -5,7 +5,7 @@ import lightgbm as lgb
 import pandas as pd
 from .evaluation import mape_score
 
-
+from config.config import TEST_SIZE, SEED
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
@@ -18,7 +18,7 @@ def train_lightgbm_model(dataframe, target, best_params=None):
     X = dataframe.drop(target, axis=1)
     y = dataframe[target]
     
-    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=TEST_SIZE, random_state=SEED)
 
     if best_params is None:
         # Parámetros iniciales del modelo
@@ -29,7 +29,6 @@ def train_lightgbm_model(dataframe, target, best_params=None):
             'num_leaves': 31,
             'learning_rate': 0.05,
             'feature_fraction': 0.9
-            # Agrega otros parámetros que desees ajustar aquí
         }
 
         # Entrenamiento del modelo
