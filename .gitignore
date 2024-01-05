@@ -1,6 +1,7 @@
-data/*
+data/*.csv
+data/*parquet
 models/*
-artifacts/*
+artifacts/*.pkl
 venv/*
 src/mlruns/*
 src/.metaflow/*
