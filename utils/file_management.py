@@ -1,4 +1,6 @@
 import yaml
+import pickle
+from config.paths import ARTIFACTS_PATH
 
 
 def read_yaml(file_name):
@@ -27,3 +29,32 @@ def read_yaml(file_name):
         return None
     
     
+def save_pkl(data, filepath):
+    """
+    Guarda un objeto en un archivo utilizando pickle.
+
+    Parameters:
+    - data: El objeto que se va a guardar.
+    - filepath: La ruta donde se guardará el archivo.
+
+    Returns:
+    - None
+    """
+    with open(filepath, 'wb') as file:
+        pickle.dump(data, file)
+
+
+def load_pkl(filepath):
+    """
+    Carga un objeto desde un archivo pickle.
+
+    Parameters:
+    - filepath: La ruta del archivo desde el cual se cargará el objeto.
+
+    Returns:
+    - El objeto cargado desde el archivo.
+    """
+    with open(filepath, 'rb') as file:
+        loaded_data = pickle.load(file)
+    return loaded_data
+
