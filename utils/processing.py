@@ -3,13 +3,33 @@ import numpy as np
 from sklearn.preprocessing import KBinsDiscretizer
 import os
 
-from config.paths import RAW_DATA_PATH
+from config.paths import RAW_DATA_PATH, PROCESSED_DATA_PATH
 
 def import_raw_dataset():
 
     filename = 'RealEstate_California.csv'
     filepath = os.path.join(RAW_DATA_PATH, filename)
     df = pd.read_csv(filepath)
+    print(f'Successfully import {filepath}')
+
+    return df
+
+
+def import_preprocessed_train_dataset():
+
+    filename = 'transformed_dataset.parquet'
+    filepath = os.path.join(PROCESSED_DATA_PATH, filename)
+    df = pd.read_parquet(filepath)
+    print(f'Successfully import {filepath}')
+
+    return df
+
+def import_test_dataset():
+
+
+    filename = 'test_dataset.parquet'
+    filepath = os.path.join(PROCESSED_DATA_PATH, filename)
+    df = pd.read_parquet(filepath)
     print(f'Successfully import {filepath}')
 
     return df
