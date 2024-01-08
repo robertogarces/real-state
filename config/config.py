@@ -19,7 +19,8 @@ DEFAULT_LGBM_PARAMS = {
     'boosting_type': 'gbdt',
     'num_leaves': 31,
     'learning_rate': 0.05,
-    'feature_fraction': 0.9
+    'feature_fraction': 0.9,
+    'n_estimators': 1000
     }
 
 NUM_BOOST_ROUND = 1000
