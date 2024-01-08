@@ -5,7 +5,7 @@ import lightgbm as lgb
 import pandas as pd
 from .evaluation import mape_score
 
-from config.config import TEST_SIZE, SEED
+from config.config import TEST_SIZE, SEED, DEFAULT_LGBM_PARAMS, NUM_BOOST_ROUND
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
@@ -22,31 +22,24 @@ def train_lightgbm_model(dataframe, target, best_params=None):
 
     if best_params is None:
         # Parámetros iniciales del modelo
-        params = {
-            'objective': 'regression',
-            'metric': 'mse',
-            'boosting_type': 'gbdt',
-            'num_leaves': 31,
-            'learning_rate': 0.05,
-            'feature_fraction': 0.9
-        }
+        params = DEFAULT_LGBM_PARAMS
 
         # Entrenamiento del modelo
-        model = lgb.train(params,
-                          lgb.Dataset(X_train, label=y_train),
-                          num_boost_round=1000,
-                          valid_sets=[lgb.Dataset(X_val, label=y_val)],
-                       #   early_stopping_rounds=50
-                       )
+        model = lgb.train(
+            params,
+            lgb.Dataset(X_train, label=y_train),
+            num_boost_round=NUM_BOOST_ROUND,
+            valid_sets=[lgb.Dataset(X_val, label=y_val)],
+            )
     else:
         # Modelo con los mejores parámetros proporcionados
         params = best_params
-        model = lgb.train(params,
-                          lgb.Dataset(X_train, label=y_train),
-                          num_boost_round=1000,
-                          valid_sets=[lgb.Dataset(X_val, label=y_val)],
-                       #   early_stopping_rounds=50
-                       )
+        model = lgb.train(
+            params,
+            lgb.Dataset(X_train, label=y_train),
+            num_boost_round=1000,
+            valid_sets=[lgb.Dataset(X_val, label=y_val)],
+            )
 
     # Evaluación en el conjunto de validación
     y_pred = model.predict(X_val, num_iteration=model.best_iteration)
@@ -69,17 +62,14 @@ def train_lightgbm_model(dataframe, target, best_params=None):
 
 
 
-def train_lightgbm_model_(dataframe, target, best_params=None):
+def train_lightgbm_model_(dataframe, target, params=None):
 
     X = dataframe.drop(target, axis=1)
     y = dataframe[target]
     
     X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
 
-    if best_params==None:
-        model = lgb.LGBMRegressor(n_estimators=1000)
-    else:
-        model = lgb.LGBMRegressor(**best_params)
+    model = lgb.LGBMRegressor(**params)
     model.fit(X_train, y_train)
 
 
@@ -99,7 +89,7 @@ def train_lightgbm_model_(dataframe, target, best_params=None):
     print(f'Test MAE : {int(train_mae)}')
     print(f'Test MeAE: {int(train_median_absolute_error)}')
     print(f'Test MAPE: {int(train_mape)}')
-    print(f'Test R2  : {round(test_r2, 3)}')
+    print(f'Test R2  : {round(train_r2, 3)}')
 
 
 

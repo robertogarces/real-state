@@ -4,15 +4,15 @@ sys.path.append('../')
 pd.set_option('display.max_columns', None)
 
 from utils.processing import *
-from utils.file_management import read_yaml, save_pkl, load_pkl
+from utils.file_management import read_yaml, save_pkl, load_pkl, save_json, read_json
 from utils.train import train_lightgbm_model
 from utils.evaluation import mape_score
 from utils.plotting import plot_feature_importance
-from utils.evaluation import evaluate_test_set
+from utils.evaluation import model_evaluation
 from utils.optimizer import optimize_lightgbm_params
 
 from config.paths import CONFIG_PATH, PROCESSED_DATA_PATH, ARTIFACTS_PATH
-from config.config import USE_OPTUNA, N_TRIALS
+from config.config import TARGET, USE_OPTUNA, USE_OPTIMIZED_PARAMS, N_TRIALS, EVALUATION_METRIC_DECIMALS, LOG_INVERSE_TRANSFORM, DEFAULT_LGBM_PARAMS, SAVE_OPTIMIZED_PARAMS
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.model_selection import train_test_split
@@ -26,9 +26,9 @@ from metaflow import FlowSpec, step
 
 class TrainModel(FlowSpec):
 
- #   mlflow.start_run()
+    mlflow.start_run()
     features = read_yaml(f'{CONFIG_PATH}/features.yaml')
-    target = features['target'][0]
+    target = features['target'][TARGET]
     preprocessing_pipeline = load_pkl(f'{ARTIFACTS_PATH}/preprocessing_pipeline.pkl')
 
     @step
@@ -48,16 +48,33 @@ class TrainModel(FlowSpec):
     @step
     def hipermarameter_optimization(self):
 
+        best_params_path = f'{CONFIG_PATH}/best_model_params.json'
+
         if USE_OPTUNA:
 
-            self.best_params = optimize_lightgbm_params(
+            print("Optimizing hyper parameters using Optuna")
+            self.params = optimize_lightgbm_params(
                 self.train.drop(self.target, axis=1),
                 self.train[self.target],
                 n_trials=N_TRIALS
                 )
+
+            print("Best hyper parameters")
+            for key, value in self.params.items():
+                print(f' • {key}: {value}')
+
+            print(self.params)
+
+            if SAVE_OPTIMIZED_PARAMS:
+    
+                save_json(self.params, best_params_path)
+                print(f"Optimized hyper parameters saved successfully in: {best_params_path}")
             
         else:
-            pass
+            self.params = DEFAULT_LGBM_PARAMS
+
+        if USE_OPTIMIZED_PARAMS:
+            self.params = read_json(best_params_path)
         
         self.next(self.train_model)
 
@@ -65,10 +82,8 @@ class TrainModel(FlowSpec):
     @step
     def train_model(self):
 
-        if USE_OPTUNA:
-            self.model = train_lightgbm_model(self.train, self.target, self.best_params)
-        else:
-            self.model = train_lightgbm_model(self.train, self.target)
+
+        self.model = train_lightgbm_model(self.train, self.target, self.params)
 
         save_pkl(self.model, f'{ARTIFACTS_PATH}/model.pkl')
         plot_feature_importance(self.model)
@@ -78,11 +93,35 @@ class TrainModel(FlowSpec):
     def evaluate_model(self):
 
         test_transformed = self.preprocessing_pipeline.transform(self.test.copy())
-        evaluate_test_set(test_transformed, self.model, self.target, decimals=3, log_inverse_transform=False)
+        self.r2, self.mape, self.rmse, self.median_absolute_error = model_evaluation(
+            test_transformed, 
+            self.model, 
+            self.target, 
+            decimals=EVALUATION_METRIC_DECIMALS, 
+            log_inverse_transform=LOG_INVERSE_TRANSFORM
+            )
+
         self.next(self.end)
 
     @step
     def end(self):
+
+        mlflow.log_param("target", TARGET)
+        mlflow.log_param("use_optuna", USE_OPTUNA)
+        mlflow.log_param("n_trials", N_TRIALS)
+        mlflow.log_param("evaluation_metric_decimals", EVALUATION_METRIC_DECIMALS)
+        mlflow.log_param("log_inverse_transform", LOG_INVERSE_TRANSFORM)
+        mlflow.log_param("model_params", self.params)
+        mlflow.log_param("use_optuna", USE_OPTUNA)
+
+        mlflow.log_metric("r2", self.r2)
+        mlflow.log_metric("mape", self.mape)
+        mlflow.log_metric("rmse", self.rmse)
+        mlflow.log_metric("median_absolute_error", self.median_absolute_error)
+
+        mlflow.sklearn.log_model(self.model, "model")
+
+        mlflow.end_run()
 
         print("Model trained successfully")
 

@@ -1,6 +1,8 @@
 import yaml
 import pickle
 from config.paths import ARTIFACTS_PATH
+import json
+import os
 
 
 def read_yaml(file_name):
@@ -58,3 +60,37 @@ def load_pkl(filepath):
         loaded_data = pickle.load(file)
     return loaded_data
 
+
+
+def save_json(data, filename):
+
+    """
+    Save the JSON data to a file.
+
+    Args:
+        data: The JSON data as a dictionary.
+        filename: The name of the file to save the JSON data to.
+
+    Returns:
+        None.
+    """
+
+    with open(filename, "w") as f:
+        json.dump(data, f, indent=4)
+
+
+def read_json(filepath):
+
+    """
+    Get the JSON data from a file.
+
+    Args:
+        filepath: The path to the JSON file.
+
+    Returns:
+        The JSON data as a dictionary.
+    """
+
+    with open(filepath, "r") as f:
+        data = json.load(f)
+    return data
