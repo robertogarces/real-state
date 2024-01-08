@@ -1,7 +1,8 @@
 import pandas as pd
-import sys 
-sys.path.append('../')
-pd.set_option('display.max_columns', None)
+import sys
+
+sys.path.append("../")
+pd.set_option("display.max_columns", None)
 
 from utils.processing import *
 from utils.file_management import read_yaml, save_pkl, load_pkl, save_json, read_json
@@ -12,7 +13,16 @@ from utils.evaluation import model_evaluation
 from utils.optimizer import optimize_lightgbm_params
 
 from config.paths import CONFIG_PATH, PROCESSED_DATA_PATH, ARTIFACTS_PATH
-from config.config import TARGET, USE_OPTUNA, USE_OPTIMIZED_PARAMS, N_TRIALS, EVALUATION_METRIC_DECIMALS, LOG_INVERSE_TRANSFORM, DEFAULT_LGBM_PARAMS, SAVE_OPTIMIZED_PARAMS
+from config.config import (
+    TARGET,
+    USE_OPTUNA,
+    USE_OPTIMIZED_PARAMS,
+    N_TRIALS,
+    EVALUATION_METRIC_DECIMALS,
+    LOG_INVERSE_TRANSFORM,
+    DEFAULT_LGBM_PARAMS,
+    SAVE_OPTIMIZED_PARAMS,
+)
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.model_selection import train_test_split
@@ -24,22 +34,20 @@ import mlflow.sklearn
 
 from metaflow import FlowSpec, step
 
-class TrainModel(FlowSpec):
 
+class TrainModel(FlowSpec):
     mlflow.start_run()
-    features = read_yaml(f'{CONFIG_PATH}/features.yaml')
-    target = features['target'][TARGET]
-    preprocessing_pipeline = load_pkl(f'{ARTIFACTS_PATH}/preprocessing_pipeline.pkl')
+    features = read_yaml(f"{CONFIG_PATH}/features.yaml")
+    target = features["target"][TARGET]
+    preprocessing_pipeline = load_pkl(f"{ARTIFACTS_PATH}/preprocessing_pipeline.pkl")
 
     @step
     def start(self):
-
         print("Initializing model training pipeline")
         self.next(self.load_data)
-        
+
     @step
     def load_data(self):
-
         self.train = import_preprocessed_train_dataset()
         self.test = import_test_dataset()
 
@@ -47,65 +55,59 @@ class TrainModel(FlowSpec):
 
     @step
     def hipermarameter_optimization(self):
-
-        best_params_path = f'{CONFIG_PATH}/best_model_params.json'
+        best_params_path = f"{CONFIG_PATH}/best_model_params.json"
 
         if USE_OPTUNA:
-
             print("Optimizing hyper parameters using Optuna")
             self.params = optimize_lightgbm_params(
                 self.train.drop(self.target, axis=1),
                 self.train[self.target],
-                n_trials=N_TRIALS
-                )
+                n_trials=N_TRIALS,
+            )
 
             print("Best hyper parameters")
             for key, value in self.params.items():
-                print(f' • {key}: {value}')
+                print(f" • {key}: {value}")
 
             print(self.params)
 
             if SAVE_OPTIMIZED_PARAMS:
-    
                 save_json(self.params, best_params_path)
-                print(f"Optimized hyper parameters saved successfully in: {best_params_path}")
-            
+                print(
+                    f"Optimized hyper parameters saved successfully in: {best_params_path}"
+                )
+
         else:
             self.params = DEFAULT_LGBM_PARAMS
 
         if USE_OPTIMIZED_PARAMS:
             self.params = read_json(best_params_path)
-        
-        self.next(self.train_model)
 
+        self.next(self.train_model)
 
     @step
     def train_model(self):
-
-
         self.model = train_lightgbm_model(self.train, self.target, self.params)
 
-        save_pkl(self.model, f'{ARTIFACTS_PATH}/model.pkl')
+        save_pkl(self.model, f"{ARTIFACTS_PATH}/model.pkl")
         plot_feature_importance(self.model)
         self.next(self.evaluate_model)
 
     @step
     def evaluate_model(self):
-
         test_transformed = self.preprocessing_pipeline.transform(self.test.copy())
         self.r2, self.mape, self.rmse, self.median_absolute_error = model_evaluation(
-            test_transformed, 
-            self.model, 
-            self.target, 
-            decimals=EVALUATION_METRIC_DECIMALS, 
-            log_inverse_transform=LOG_INVERSE_TRANSFORM
-            )
+            test_transformed,
+            self.model,
+            self.target,
+            decimals=EVALUATION_METRIC_DECIMALS,
+            log_inverse_transform=LOG_INVERSE_TRANSFORM,
+        )
 
         self.next(self.end)
 
     @step
     def end(self):
-
         mlflow.log_param("target", TARGET)
         mlflow.log_param("use_optuna", USE_OPTUNA)
         mlflow.log_param("n_trials", N_TRIALS)
@@ -125,7 +127,6 @@ class TrainModel(FlowSpec):
 
         print("Model trained successfully")
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     TrainModel()
-
-
