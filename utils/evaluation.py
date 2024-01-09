@@ -20,7 +20,7 @@ def mape_score(y_true, y_pred):
     return mape
 
 
-def model_evaluation(test_set, model, target, decimals=0, log_inverse_transform=False):
+def model_evaluation(test_set, model, target, decimals=2, log_inverse_transform=False):
 
     test_preds = model.predict(test_set.drop(columns=target))
     test_actual = test_set[target]

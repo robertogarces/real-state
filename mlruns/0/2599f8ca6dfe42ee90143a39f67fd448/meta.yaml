@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/robertogarces/data-science/projects/real-state/mlruns/0/2599f8ca6dfe42ee90143a39f67fd448/artifacts
+end_time: 1704692922207
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 2599f8ca6dfe42ee90143a39f67fd448
+run_name: capable-roo-322
+run_uuid: 2599f8ca6dfe42ee90143a39f67fd448
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1704692922135
+status: 3
+tags: []
+user_id: robertogarces

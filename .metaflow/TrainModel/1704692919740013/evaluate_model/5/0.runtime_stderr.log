@@ -1,0 +1,5 @@
+[MFLOG|0|2024-01-08T05:49:48.326067Z|runtime|d361d9d3-c238-4dc0-9787-ba93740cb58f]Traceback (most recent call last):
+[MFLOG|0|2024-01-08T05:49:48.326409Z|runtime|7c8bfca1-5e63-45dc-b730-286997e4c109]  File "/Users/robertogarces/data-science/projects/real-state/src/train.py", line 7, in <module>
+[MFLOG|0|2024-01-08T05:49:48.326492Z|runtime|9254ca7c-caea-498c-b10e-e116a0d7a0f1]    from utils.processing import *
+[MFLOG|0|2024-01-08T05:49:48.368297Z|runtime|aff1d83c-819f-42d6-b2d5-1858f23add6c]ModuleNotFoundError: No module named 'utils'
+[MFLOG|0|2024-01-08T05:49:48.369086Z|runtime|93586f68-bfb3-449a-9045-223659e3ca0c]Task failed.

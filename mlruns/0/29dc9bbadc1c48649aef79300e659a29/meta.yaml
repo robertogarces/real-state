@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/robertogarces/data-science/projects/real-state/mlruns/0/29dc9bbadc1c48649aef79300e659a29/artifacts
+end_time: 1704692925596
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 29dc9bbadc1c48649aef79300e659a29
+run_name: nebulous-whale-637
+run_uuid: 29dc9bbadc1c48649aef79300e659a29
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1704692925129
+status: 3
+tags: []
+user_id: robertogarces

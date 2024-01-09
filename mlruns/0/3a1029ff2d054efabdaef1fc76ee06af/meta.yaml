@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/robertogarces/data-science/projects/real-state/mlruns/0/3a1029ff2d054efabdaef1fc76ee06af/artifacts
+end_time: 1704692988371
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 3a1029ff2d054efabdaef1fc76ee06af
+run_name: defiant-cow-359
+run_uuid: 3a1029ff2d054efabdaef1fc76ee06af
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1704692919459
+status: 3
+tags: []
+user_id: robertogarces

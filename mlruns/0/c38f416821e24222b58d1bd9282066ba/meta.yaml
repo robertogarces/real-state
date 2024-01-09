@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/robertogarces/data-science/projects/real-state/mlruns/0/c38f416821e24222b58d1bd9282066ba/artifacts
+end_time: 1704692955572
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: c38f416821e24222b58d1bd9282066ba
+run_name: carefree-sow-237
+run_uuid: c38f416821e24222b58d1bd9282066ba
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1704692928357
+status: 3
+tags: []
+user_id: robertogarces

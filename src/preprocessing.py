@@ -11,7 +11,7 @@ from utils.evaluation import mape_score
 from utils.plotting import plot_feature_importance
 from utils.evaluation import evaluate_test_set
 
-from config.paths import CONFIG_PATH, PROCESSED_DATA_PATH, ARTIFACTS_PATH
+from config.paths import CONFIG_PATH, PROCESSED_DATA_PATH, ARTIFACTS_PATH, ROOT_PATH
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.model_selection import train_test_split

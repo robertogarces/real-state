@@ -1,0 +1,2 @@
+[MFLOG|0|2024-01-08T05:48:45.334349Z|runtime|8f14fa24-39fb-47c0-9b11-d6a274d2a03c]Successfully import /Users/robertogarces/data-science/projects/real-state/data/processed/transformed_dataset.parquet
+[MFLOG|0|2024-01-08T05:48:45.353010Z|runtime|afddfde4-12cf-4a6e-8134-52c636aac00a]Successfully import /Users/robertogarces/data-science/projects/real-state/data/processed/test_dataset.parquet

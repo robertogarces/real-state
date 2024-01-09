@@ -1,0 +1,11 @@
+[MFLOG|0|2024-01-08T05:48:48.423895Z|runtime|60887bcf-52bc-4e97-9d2f-70baf6846616]Optimizing hyper parameters using Optuna
+[MFLOG|0|2024-01-08T05:49:15.550300Z|runtime|3e826253-addf-438b-9abb-a17266c541f6]Best hyper parameters
+[MFLOG|0|2024-01-08T05:49:15.550658Z|runtime|9bdeafc1-1dc6-4353-b672-72c21b955c75] • num_leaves: 159
+[MFLOG|0|2024-01-08T05:49:15.550737Z|runtime|71bc7f3d-883e-4ec2-afc3-a55b427f3223] • learning_rate: 0.007528583417603876
+[MFLOG|0|2024-01-08T05:49:15.550792Z|runtime|533dc14f-41cf-4fa3-b47b-fa14f9104d67] • feature_fraction: 0.44032762440013173
+[MFLOG|0|2024-01-08T05:49:15.550841Z|runtime|5d818347-eba6-4066-bd40-631caf5e7c00] • bagging_fraction: 0.2356869246553808
+[MFLOG|0|2024-01-08T05:49:15.550892Z|runtime|79739a90-4725-4b82-92b8-37bd11a8457e] • bagging_freq: 7
+[MFLOG|0|2024-01-08T05:49:15.550941Z|runtime|82b26eb4-324a-4528-adfb-12ddce562b1c] • reg_alpha: 0.008889826384913688
+[MFLOG|0|2024-01-08T05:49:15.550994Z|runtime|ec2f03da-b820-4887-8c12-89aa677a74e4] • reg_lambda: 2.6619025056772053e-07
+[MFLOG|0|2024-01-08T05:49:15.551040Z|runtime|62752eb4-d206-4d4f-bb29-a2d5648cc287]{'num_leaves': 159, 'learning_rate': 0.007528583417603876, 'feature_fraction': 0.44032762440013173, 'bagging_fraction': 0.2356869246553808, 'bagging_freq': 7, 'reg_alpha': 0.008889826384913688, 'reg_lambda': 2.6619025056772053e-07}
+[MFLOG|0|2024-01-08T05:49:15.551103Z|runtime|481bafad-7da0-4091-8d34-a0bed0c91542]Optimized hyper parameters saved successfully in: /Users/robertogarces/data-science/projects/real-state/config/best_model_params.json

@@ -1,0 +1,12 @@
+[MFLOG|0|2024-01-08T05:49:18.780935Z|runtime|07567efc-f57f-4b21-9895-b66b31ab9ad6][LightGBM] [Info] Auto-choosing row-wise multi-threading, the overhead of testing was 0.001002 seconds.
+[MFLOG|0|2024-01-08T05:49:18.781265Z|runtime|85af4be8-4f54-45d2-a03d-67bfa2c93992]You can set `force_row_wise=true` to remove the overhead.
+[MFLOG|0|2024-01-08T05:49:18.781339Z|runtime|6815e740-4905-4c29-93a1-7976ae82dce6]And if memory is not enough, you can set `force_col_wise=true`.
+[MFLOG|0|2024-01-08T05:49:18.781401Z|runtime|9290008d-24d3-4f2b-a574-055e6cee7178][LightGBM] [Info] Total Bins 2681
+[MFLOG|0|2024-01-08T05:49:18.783772Z|runtime|d82856b9-770c-4089-b197-607fdbafa66c][LightGBM] [Info] Number of data points in the train set: 20022, number of used features: 24
+[MFLOG|0|2024-01-08T05:49:18.783912Z|runtime|63607ff5-5731-4294-9ca9-ee98539bdbb4][LightGBM] [Info] Start training from score 948239.892269
+[MFLOG|0|2024-01-08T05:49:46.445550Z|runtime|13019aa8-101c-4d22-ad8f-0361a6ffe933]RMSE: 466640
+[MFLOG|0|2024-01-08T05:49:47.816176Z|runtime|2dce88af-225e-4070-8218-275995b1363c]MSE : 217753096016
+[MFLOG|0|2024-01-08T05:49:47.816342Z|runtime|1c4f7e79-442f-4456-b28b-b03d83be03db]MAE : 249753
+[MFLOG|0|2024-01-08T05:49:47.816395Z|runtime|76957f20-be64-4188-a3f1-6dadffeee9de]MeAE: 113103
+[MFLOG|0|2024-01-08T05:49:47.816436Z|runtime|968a2de4-e67c-4765-8f71-71f48d09e18a]MAPE: 0
+[MFLOG|0|2024-01-08T05:49:47.816477Z|runtime|d905f159-9c54-4101-a69a-f3def9cffe92]R2  : 0.712

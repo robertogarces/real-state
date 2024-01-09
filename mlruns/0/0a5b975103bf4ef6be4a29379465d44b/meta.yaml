@@ -1,0 +1,15 @@
+artifact_uri: file:///Users/robertogarces/data-science/projects/real-state/mlruns/0/0a5b975103bf4ef6be4a29379465d44b/artifacts
+end_time: 1704692987476
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 0a5b975103bf4ef6be4a29379465d44b
+run_name: useful-koi-928
+run_uuid: 0a5b975103bf4ef6be4a29379465d44b
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1704692958644
+status: 3
+tags: []
+user_id: robertogarces

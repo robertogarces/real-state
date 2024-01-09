@@ -1,18 +1,10 @@
 import pandas as pd
 import sys
 
-sys.path.append("../")
-pd.set_option("display.max_columns", None)
+import sys
+sys.path.append('../')
 
-from utils.processing import *
-from utils.file_management import read_yaml, save_pkl, load_pkl, save_json, read_json
-from utils.train import train_lightgbm_model
-from utils.evaluation import mape_score
-from utils.plotting import plot_feature_importance
-from utils.evaluation import model_evaluation
-from utils.optimizer import optimize_lightgbm_params
-
-from config.paths import CONFIG_PATH, PROCESSED_DATA_PATH, ARTIFACTS_PATH
+from config.paths import CONFIG_PATH, ARTIFACTS_PATH, ROOT_PATH
 from config.config import (
     TARGET,
     USE_OPTUNA,
@@ -23,11 +15,13 @@ from config.config import (
     DEFAULT_LGBM_PARAMS,
     SAVE_OPTIMIZED_PARAMS,
 )
-from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import FunctionTransformer
-from sklearn.model_selection import train_test_split
 
-import lightgbm as lgb
+from utils.processing import *
+from utils.file_management import read_yaml, save_pkl, load_pkl, save_json, read_json
+from utils.train import train_lightgbm_model
+from utils.plotting import plot_feature_importance
+from utils.evaluation import model_evaluation
+from utils.optimizer import optimize_lightgbm_params
 
 import mlflow
 import mlflow.sklearn
