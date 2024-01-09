@@ -81,10 +81,10 @@ class TrainModel(FlowSpec):
 
     @step
     def train_model(self):
-        self.model = train_lightgbm_model(self.train, self.target, self.params)
 
+        self.model = train_lightgbm_model(self.train, self.target, self.params)
         save_pkl(self.model, f"{ARTIFACTS_PATH}/model.pkl")
-        plot_feature_importance(self.model)
+        
         self.next(self.evaluate_model)
 
     @step

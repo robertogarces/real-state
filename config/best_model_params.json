@@ -1,9 +1,9 @@
 {
-    "num_leaves": 170,
-    "learning_rate": 0.072459243203379,
-    "feature_fraction": 0.3792638920286918,
-    "bagging_fraction": 0.21987484826701287,
-    "bagging_freq": 7,
-    "reg_alpha": 1.156570937991046e-08,
-    "reg_lambda": 0.045547153093458075
+    "num_leaves": 145,
+    "learning_rate": 0.022175993276087533,
+    "feature_fraction": 0.4299595342604079,
+    "bagging_fraction": 0.6510958295079136,
+    "bagging_freq": 9,
+    "reg_alpha": 0.004895806129638686,
+    "reg_lambda": 0.011653041547961521
 }

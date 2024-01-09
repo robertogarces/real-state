@@ -5,3 +5,4 @@ artifacts/*.pkl
 venv/*
 src/mlruns/*
 src/.metaflow/*
+.metaflow/*

@@ -5,29 +5,23 @@ sys.path.append("../")
 pd.set_option("display.max_columns", None)
 
 from utils.processing import *
-from utils.file_management import read_yaml, save_pkl, load_pkl
-from utils.train import train_lightgbm_model
-from utils.evaluation import mape_score
-from utils.plotting import plot_feature_importance
-from utils.evaluation import evaluate_test_set
+from utils.file_management import read_yaml, save_pkl
 
-from config.paths import CONFIG_PATH, PROCESSED_DATA_PATH, ARTIFACTS_PATH, ROOT_PATH
+from config.paths import CONFIG_PATH, PROCESSED_DATA_PATH, ARTIFACTS_PATH
+from config.config import TARGET, SEED, LOWER_BOUND, UPPER_BOUND, TRAIN_SIZE
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
-from sklearn.model_selection import train_test_split
-
-import lightgbm as lgb
 
 import mlflow
-import mlflow.sklearn
 
 from metaflow import FlowSpec, step
 
 
 class Preprocessing(FlowSpec):
-    #   mlflow.start_run()
+
+    mlflow.start_run()
     features = read_yaml(f"{CONFIG_PATH}/features.yaml")
-    target = features["target"][0]
+    target = features["target"][TARGET]
 
     @step
     def start(self):
@@ -42,14 +36,14 @@ class Preprocessing(FlowSpec):
     @step
     def preprocessing(self):
         self.df = remove_duplicated_ids(self.df)
-        self.df = remove_price_outliers(self.df, lower_bound=2.5, upper_bound=97.5)
+        self.df = remove_price_outliers(self.df, lower_bound=LOWER_BOUND, upper_bound=UPPER_BOUND)
         self.next(self.split_datasets)
 
     @step
     def split_datasets(self):
-        pctg_train = 0.8
+        pctg_train = TRAIN_SIZE
         n_train = int(len(self.df) * pctg_train)
-        train_idx = self.df.sample(n=n_train, random_state=42).index
+        train_idx = self.df.sample(n=n_train, random_state=SEED).index
         self.train = self.df.loc[train_idx]
         self.test = self.df.loc[~self.df.index.isin(train_idx)]
 
@@ -167,6 +161,14 @@ class Preprocessing(FlowSpec):
 
     @step
     def end(self):
+
+        mlflow.log_param("target", TARGET)
+        mlflow.log_param("price_outlier_lower_bound", LOWER_BOUND)
+        mlflow.log_param("price_outlier_upper_bound", UPPER_BOUND)
+        mlflow.log_param("train_size", TRAIN_SIZE)
+
+        mlflow.end_run()
+    
         print("Preprocessing pipeline ended successfully")
 
 
