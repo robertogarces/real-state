@@ -8,7 +8,7 @@ from utils.processing import *
 from utils.file_management import read_yaml, save_pkl
 
 from config.paths import CONFIG_PATH, PROCESSED_DATA_PATH, ARTIFACTS_PATH
-from config.config import TARGET, SEED, LOWER_BOUND, UPPER_BOUND, TRAIN_SIZE
+from config.config import TARGET, SEED, LOWER_BOUND, UPPER_BOUND, TRAIN_SIZE, INFERENCE_SIZE
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import FunctionTransformer
 
@@ -20,7 +20,11 @@ from metaflow import FlowSpec, step
 class Preprocessing(FlowSpec):
 
     mlflow.start_run()
+
+    # Features characteristics is loaded
     features = read_yaml(f"{CONFIG_PATH}/features.yaml")
+
+    # We choose our target. There are two posible targets: "price" and "price_log", which are defined at "config/config.py"
     target = features["target"][TARGET]
 
     @step
@@ -30,24 +34,40 @@ class Preprocessing(FlowSpec):
 
     @step
     def load_data(self):
+
+        # Data is loaded
         self.df = import_raw_dataset()
         self.next(self.preprocessing)
 
     @step
     def preprocessing(self):
+
+        # Duplicated id and outliers are removed for both training and testing datasets (so it's done before de preprocesing pipeline)
         self.df = remove_duplicated_ids(self.df)
         self.df = remove_price_outliers(self.df, lower_bound=LOWER_BOUND, upper_bound=UPPER_BOUND)
         self.next(self.split_datasets)
 
     @step
     def split_datasets(self):
+
+        # Training, testing and inference datasets are created. It's parameters are defined at "config/config.py"
         pctg_train = TRAIN_SIZE
+        pctg_inference = INFERENCE_SIZE
+
         n_train = int(len(self.df) * pctg_train)
+        n_inference = int(len(self.df) * pctg_inference)
+
         train_idx = self.df.sample(n=n_train, random_state=SEED).index
+
         self.train = self.df.loc[train_idx]
         self.test = self.df.loc[~self.df.index.isin(train_idx)]
 
+        self.inference = self.test.sample(n=n_inference, random_state=SEED)
+        self.test = self.test.drop(self.inference.index)
+
         self.test.to_parquet(f"{PROCESSED_DATA_PATH}/test_dataset.parquet", index=False)
+        self.inference.to_parquet(f"{PROCESSED_DATA_PATH}/inference_dataset.parquet", index=False)
+
         self.next(self.transform_functions)
 
     @step

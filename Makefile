@@ -3,3 +3,6 @@ docker-build-image:
 
 docker-run-image:
 	docker run real-state
+
+docker-run-preprocessing:
+	docker run -v $(PWD)/data:/app/data -t real-state python src/preprocessing.py run
